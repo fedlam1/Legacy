@@ -1,13 +1,4 @@
-services:
-  - type: web
-    name: legacy-engine
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-5.5
-      - key: LEGACY_WEBHOOK_SECRET
-        sync: false
+fastapi>=0.115,<1
+uvicorn[standard]>=0.30,<1
+openai>=2.35,<3
+pydantic>=2.8,<3
