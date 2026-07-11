@@ -1,72 +1,13 @@
-# LEGACY Engine
-
-A small FastAPI service that converts Luke Fedlam's Daily Sparks into four
-platform-specific social media drafts.
-
-## What this version does
-
-- Accepts a text Daily Spark at `POST /generate`
-- Applies the shared LEGACY Knowledge Pack
-- Calls the OpenAI Responses API
-- Returns structured drafts for LinkedIn, Instagram, Facebook, and X
-- Protects the endpoint with an optional shared webhook secret
-
-Google Drive and Zapier are connected after this service is deployed and tested.
-
-## Local setup
-
-1. Install Python 3.11 or later.
-2. Create and activate a virtual environment.
-3. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-4. Copy `.env.example` to `.env` and add your values.
-5. Export the variables from `.env` in your terminal or use your preferred environment loader.
-6. Start the server:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-7. Open `http://127.0.0.1:8000/docs`.
-
-## Test request
-
-```bash
-curl -X POST "http://127.0.0.1:8000/generate" \
-  -H "Content-Type: application/json" \
-  -H "X-LEGACY-SECRET: your-secret" \
-  -d '{
-    "source_title": "Coach Story",
-    "spark": "My high school coach believed in me before I believed in myself. He advocated with my parents so I could compete in three sports, and that changed my life."
-  }'
-```
-
-## Expected response
-
-A JSON object containing:
-
-- title
-- central idea
-- recommended primary platform
-- LinkedIn draft
-- Instagram draft
-- Facebook draft
-- X draft
-- image idea
-- hashtags
-- risk warning
-
-## Security
-
-Never commit your `.env` file or API key. Put secrets into the environment-variable
-settings of whichever hosting platform you choose.
-
-## Next milestone
-
-Deploy the API, confirm `/health` and `/generate`, then connect Zapier:
-
-Google Drive trigger → Webhooks by Zapier POST → Google Drive output.
+services:
+  - type: web
+    name: legacy-engine
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.5
+      - key: LEGACY_WEBHOOK_SECRET
+        sync: false
